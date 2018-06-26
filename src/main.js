@@ -29,8 +29,9 @@ function makeBabyMiners(max)
 {
     var behaviour = roles.names.MINER;
     var miners = findCreeps(behaviour);
+    var spawn = Game.spawns['Home'];
     if(miners.length < max) {
-        Game.spawns['Home'].spawnCreep([WORK, CARRY, MOVE, MOVE], behaviour + Game.time, { memory: { behaviour: behaviour } });
+        spawn.spawnCreep([WORK, CARRY, MOVE, MOVE], behaviour + Game.time, { memory: { behaviour: behaviour, assignedRoom: spawn.room.name } });
     }
 }
 
@@ -38,8 +39,9 @@ function makeBabyPerfectionists(max)
 {
     var behaviour = roles.names.PERFECTIONIST;
     var perfectionists = findCreeps(behaviour);
+    var spawn = Game.spawns['Home'];
     if(perfectionists.length < max) {
-        Game.spawns['Home'].spawnCreep([WORK, CARRY, MOVE, MOVE], behaviour + Game.time, { memory: { behaviour: behaviour } });
+        spawn.spawnCreep([WORK, CARRY, MOVE, MOVE], behaviour + Game.time, { memory: { behaviour: behaviour, assignedRoom: spawn.room.name } });
     }
 }
 
@@ -47,6 +49,10 @@ function goToWork()
 {
     minerManager.scanSources();
     for(var name in Game.creeps) {
+        if(Game.creeps[name].memory.assignedRoom == undefined) {
+            Game.creeps[name].memory.assignedRoom = Game.spawns['Home'].room.name;
+        }
+        
         Game.creeps[name].work();
     }
 }
