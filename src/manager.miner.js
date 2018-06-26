@@ -41,7 +41,7 @@ function computeSourceAccessPoints(source) {
             }
         }
     }
-    
+
     return sourceAccessPoints;
 }
 
@@ -59,8 +59,8 @@ function unassign(minerCreep) {
     if(minerCreep.memory.assignedSource == undefined) {
         return;
     }
-    
-    var roomName = minerCreep.room.name;
+
+    var roomName = minerCreep.memory.assignedRoom;
     var sourceId = minerCreep.memory.assignedSource;
     Memory.sourceCapabilities[roomName][sourceId].miners -= 1;
     minerCreep.memory.assignedSource = undefined;
@@ -70,14 +70,14 @@ function assign(minerCreep) {
     if(minerCreep.memory.assignedSource != undefined) {
         return;
     }
-    
+
     if(!assignToSourceWithMissingWorkforce(minerCreep)) {
         assignToSourceWithLeastLoad(minerCreep);
     }
 }
 
 function assignToSourceWithMissingWorkforce(minerCreep) {
-    var roomName = minerCreep.room.name;
+    var roomName = minerCreep.memory.assignedRoom;
     var sourceCapabilities = Memory.sourceCapabilities[roomName];
     for (sourceId in sourceCapabilities) {
         var sourceCapability = sourceCapabilities[sourceId];
@@ -87,19 +87,19 @@ function assignToSourceWithMissingWorkforce(minerCreep) {
             return true;
         }
     }
-    
+
     return false;
 }
 
 function assignToSourceWithLeastLoad(minerCreep) {
-    var roomName = minerCreep.room.name;
+    var roomName = minerCreep.memory.assignedRoom;
     var sourceCapabilities = Memory.sourceCapabilities[roomName];
     var loads = [];
     for (sourceId in sourceCapabilities) {
         var sourceCapability = sourceCapabilities[sourceId];
         loads.push({ sourceId: sourceId, load: sourceCapability.miners / sourceCapability.accessPoints });
     }
-    
+
     loads.sort(function(a, b) { return a.load - b.load });
     var sourceId = loads[0].sourceId;
     minerCreep.memory.assignedSource = sourceId;
